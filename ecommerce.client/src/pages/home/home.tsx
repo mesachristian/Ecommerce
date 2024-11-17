@@ -3,16 +3,24 @@ import { Card, CardContent } from "@/components/ui/card"
 import { CategoryMiniature, HomeSection } from "@/models"
 import { getCategories, getHomeSections } from "@/service/home.service"
 import { Heart } from "lucide-react"
-import { useEffect, useState } from "react"
+import { useContext, useEffect, useState } from "react"
+import { BottomSheetContext } from "@/context/bottom-sheet.context";
 
 const HomePage = () => {
 
     const [categories, setCategories] = useState<CategoryMiniature[] | null>(null);
     const [sections, setSections] = useState<HomeSection[] | null>(null);
 
+    const { showProductBottomSheetCallback } = useContext(BottomSheetContext);
+
     const loadInitData = async () => {
-        setCategories(await getCategories());
-        setSections(await getHomeSections());
+        const [resCategories, resSections] = await Promise.all([
+            getCategories(),
+            getHomeSections()
+        ]);
+
+        setCategories(resCategories);
+        setSections(resSections);
     }
 
     useEffect(() => {
@@ -64,7 +72,7 @@ const HomePage = () => {
                             <div className="flex pb-2 overflow-x-auto scrollbar-hide">
                                 {section.products.map((product) => (
                                     <Card key={product.name} className="w-[220px] mr-2 flex-shrink-0">
-                                        <CardContent className="p-4 w-full relative">
+                                        <CardContent className="p-4 w-full relative" onClick={() => showProductBottomSheetCallback!(product.id)}>
                                             <div className="flex justify-end">
                                                 <Button
                                                     variant="ghost"
@@ -80,7 +88,7 @@ const HomePage = () => {
                                                 <span className="text-emerald-600 font-bold">${product.priceCOP / 1000000}M</span>
                                                 {
                                                     product.notDiscountPriceCOP &&
-                                                    <span className="text-sm text-gray-500 line-through">${product.notDiscountPriceCOP / 1000000}k</span>
+                                                    <span className="text-sm text-gray-500 line-through">${product.notDiscountPriceCOP / 1000000}M</span>
                                                 }
 
                                             </div>

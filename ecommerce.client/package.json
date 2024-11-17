@@ -9,19 +9,29 @@
     "lint": "eslint .",
     "preview": "vite preview"
   },
+  "engines": {
+    "npm": ">=20.0.0"
+  },
   "dependencies": {
+    "@radix-ui/react-avatar": "^1.1.1",
+    "@radix-ui/react-separator": "^1.1.0",
     "@radix-ui/react-slot": "^1.1.0",
+    "@radix-ui/react-switch": "^1.1.1",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.1",
+    "crypto-js": "^4.2.0",
     "lucide-react": "^0.456.0",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "react-router-dom": "^6.28.0",
+    "react-spring-bottom-sheet": "^3.4.1",
+    "swiper": "^11.1.14",
     "tailwind-merge": "^2.5.4",
     "tailwindcss-animate": "^1.0.7"
   },
   "devDependencies": {
     "@eslint/js": "^9.13.0",
+    "@types/crypto-js": "^4.2.2",
     "@types/node": "^18.14.0",
     "@types/react": "^18.3.12",
     "@types/react-dom": "^18.3.1",

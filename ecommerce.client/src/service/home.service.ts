@@ -44,7 +44,7 @@ export const getCategories = async (): Promise<CategoryMiniature[]> => {
         }
     ];
 
-    await (new Promise(resolve => setTimeout(resolve, 2000)));
+    await (new Promise(resolve => setTimeout(resolve, 500)));
 
     return fakeCategories;
 }
@@ -173,7 +173,7 @@ export const getHomeSections = async (): Promise<HomeSection[]> => {
         }
     ];
 
-    await (new Promise(resolve => setTimeout(resolve, 4000)));
+    await (new Promise(resolve => setTimeout(resolve, 500)));
 
     return sections;
 }
