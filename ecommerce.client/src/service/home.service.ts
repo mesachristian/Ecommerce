@@ -1,5 +1,7 @@
+import { CategoryMiniature, HomeSection, Product } from "@/models";
+
 // IDataService.ts
-export interface HomeService {
-    getAllProducts(productId: string | undefined): Promise<[]>;
-    getProductInfo(): Promise<[]>;
+export interface IHomeService {
+    getCategories(): Promise<CategoryMiniature[]>;
+    getHomeSections(): Promise<HomeSection[]>;
   }
