@@ -1,10 +1,10 @@
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { CategoryMiniature, HomeSection } from "@/models"
-import { getCategories, getHomeSections } from "@/service/home.service"
 import { Heart } from "lucide-react"
 import { useContext, useEffect, useState } from "react"
 import { BottomSheetContext } from "@/context/bottom-sheet.context";
+import { useServices } from '@/context/service.context';
 
 const HomePage = () => {
 
@@ -12,11 +12,13 @@ const HomePage = () => {
     const [sections, setSections] = useState<HomeSection[] | null>(null);
 
     const { showProductBottomSheetCallback } = useContext(BottomSheetContext);
+    const {homeService} = useServices();
+
 
     const loadInitData = async () => {
         const [resCategories, resSections] = await Promise.all([
-            getCategories(),
-            getHomeSections()
+            homeService.getCategories(),
+            homeService.getHomeSections()
         ]);
 
         setCategories(resCategories);
