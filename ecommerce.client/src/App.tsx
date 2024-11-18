@@ -1,6 +1,5 @@
 import { Bell, Home, Search, ShoppingCart, Star, User } from 'lucide-react'
 import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
 import { Route, Routes, useNavigate } from 'react-router-dom'
 import {
     CartPage,
@@ -48,7 +47,7 @@ function App() {
 
                 <AppFooter />
 
-                <BottomSheet
+                <BottomSheet  
                     open={showProductBottomSheet}
                     onDismiss={() => setShowProductBottomSheet(false)}>
                     <MobileProductSheet productId={productIdBS} />
@@ -72,14 +71,6 @@ const AppHeader = () => {
                     <h1 className="text-lg font-semibold text-emerald-700">YourTech</h1>
                 </div>
                 <Bell className="text-gray-600" />
-            </div>
-
-            <div className="relative">
-                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
-                <Input
-                    placeholder="Search the entire shop"
-                    className="pl-10 w-full"
-                />
             </div>
         </header>
     )
