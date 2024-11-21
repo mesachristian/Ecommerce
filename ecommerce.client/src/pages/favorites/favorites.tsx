@@ -1,27 +1,35 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { Heart } from 'lucide-react'
-
-interface FavoriteProduct {
-    id: string;
-    name: string;
-    price: number;
-    image: string;
-}
+import { useServices } from "@/context/service.context";
+import { FavoriteProduct } from "@/models";
+import { motion, AnimatePresence } from "motion/react";
+import { LoadingComponent } from "@/components/global";
 
 const FavoritesPage = () => {
+    // Services
+    const { favoritesService } = useServices();
 
-    const [favorites, setFavorites] = useState<FavoriteProduct[]>([
-        { id: '1', name: 'YourPhone 15 Pro', price: 699, image: 'https://m.media-amazon.com/images/I/71dRtTqxghL.jpg' },
-        { id: '2', name: 'YourBuds Pro', price: 69, image: 'https://m.media-amazon.com/images/I/71dRtTqxghL.jpg' },
-        { id: '3', name: 'YourTab Air', price: 449, image: 'https://m.media-amazon.com/images/I/71dRtTqxghL.jpg' },
-        { id: '4', name: 'YourWatch Series 5', price: 299, image: 'https://m.media-amazon.com/images/I/71dRtTqxghL.jpg' },
-    ]);
+    const [favorites, setFavorites] = useState<FavoriteProduct[] | null>(null);
+
+    const loadInitData = async () => {
+        setFavorites(await favoritesService.getFavorites());
+    }
 
     const removeFromFavorites = (id: string) => {
-        setFavorites(favorites.filter(product => product.id !== id));
+        setFavorites(favorites!.filter(product => product.id !== id));
     };
+
+    useEffect(() => {
+        loadInitData().catch(console.log);
+    }, [])
+
+    if (favorites == null) {
+        return (
+            <LoadingComponent></LoadingComponent>
+        );
+    }
 
     return (
         <>
@@ -32,30 +40,42 @@ const FavoritesPage = () => {
                     <Button className="bg-emerald-600 hover:bg-emerald-700">Start Shopping</Button>
                 </div>
             ) : (
-                favorites.map((product) => (
-                    <Card key={product.id} className="overflow-hidden border-none shadow-lg">
-                        <CardContent className="p-0">
-                            <div className="flex items-center">
-                                <img src={product.image} alt={product.name} className="w-32 h-32 object-cover rounded-l-lg" />
-                                <div className="flex-grow p-4">
-                                    <h3 className="font-semibold text-lg mb-1">{product.name}</h3>
-                                    <p className="mb-2">${product.price}</p>
-                                    <div className="flex justify-between items-center">
-                                        <Button size="sm" className="bg-emerald-600 hover:bg-emerald-700">Add to Cart</Button>
-                                        <Button
-                                            variant="ghost"
-                                            size="sm"
-                                            onClick={() => removeFromFavorites(product.id)}
-                                            className="text-red-500 hover:text-red-700"
-                                        >
-                                            Remove
-                                        </Button>
-                                    </div>
-                                </div>
-                            </div>
-                        </CardContent>
-                    </Card>
-                ))
+                <AnimatePresence>
+                    {
+                        favorites.map((product) => (
+                            <motion.div
+                                key={product.id}
+                                initial={{ opacity: 1, x: 0 }}
+                                exit={{ opacity: 0, x: 100 }}
+                                transition={{ duration: 0.3 }}
+                                layout
+                            >
+                                <Card key={product.id} className="overflow-hidden border-none shadow-lg mt-4">
+                                    <CardContent className="p-0">
+                                        <div className="flex items-center">
+                                            <img src={product.imageUrl} alt={product.name} className="w-32 h-32 object-cover rounded-l-lg" />
+                                            <div className="flex-grow p-4">
+                                                <h3 className="font-semibold text-lg mb-1">{product.name}</h3>
+                                                <p className="mb-2">${product.priceCOP}</p>
+                                                <div className="flex justify-between items-center">
+                                                    <Button size="sm" className="bg-emerald-600 hover:bg-emerald-700">Add to Cart</Button>
+                                                    <Button
+                                                        variant="ghost"
+                                                        size="sm"
+                                                        onClick={() => removeFromFavorites(product.id)}
+                                                        className="text-red-500 hover:text-red-700"
+                                                    >
+                                                        Remove
+                                                    </Button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </CardContent>
+                                </Card>
+                            </motion.div>
+                        ))
+                    }
+                </AnimatePresence>
             )}
         </>
     )

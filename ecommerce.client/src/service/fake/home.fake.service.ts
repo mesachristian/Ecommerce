@@ -2,9 +2,24 @@
 import { IHomeService } from "../home.service";
 import { CategoryMiniature, HomeSection, Product } from "@/models";
 
+const CATEGORIES_LOCAL_STORAGE_KEY = "categories-key";
+const PRODUCTS_LOCAL_STORAGE_KEY = "products-key";
+
 export class HomeServiceFakeImpl implements IHomeService {
   constructor() {
-    // You can initialize any properties here if needed
+    this.loadInitData();
+  }
+
+  async loadInitData(): Promise<void> {
+    // Load Categories
+    var categoriesJson = await import('@/assets/data/fake-categories.json');
+    var categoriesObj = categoriesJson.default as CategoryMiniature[];
+    localStorage.setItem(CATEGORIES_LOCAL_STORAGE_KEY, JSON.stringify(categoriesObj));
+
+    // Load Products
+    var productsJson = await import('@/assets/data/fake-products.json');
+    var productsObj = productsJson.default as Product[];
+    localStorage.setItem(PRODUCTS_LOCAL_STORAGE_KEY, JSON.stringify(productsObj));
   }
 
   /**
@@ -12,53 +27,10 @@ export class HomeServiceFakeImpl implements IHomeService {
    * @returns Promise resolving to an array of CategoryMiniature.
    */
   async getCategories(): Promise<CategoryMiniature[]> {
-    const fakeCategories: CategoryMiniature[] = [
-      {
-        id: 'c-1',
-        label: 'Celulares',
-        imageUrl: 'https://as-images.apple.com/is/MHLM3_AV08?wid=1000&hei=1000&fmt=jpeg&qlt=95&.v=1618534326000'
-      },
-      {
-        id: 'c-2',
-        label: 'Telefonos',
-        imageUrl: 'https://media.direct.playstation.com/is/image/sierialto/PS5PRO-Hero-1'
-      },
-      {
-        id: 'c-3',
-        label: 'Laptops',
-        imageUrl: 'https://img-prod-cms-rt-microsoft-com.akamaized.net/cms/api/am/imageFileData/RW1geGv?ver=e834&q=90&m=6&h=705&w=1253&b=%23FFFFFFFF&f=jpg&o=f&p=140&aim=true'
-      },
-      {
-        id: 'c-4',
-        label: 'Cámaras',
-        imageUrl: 'https://www.ukal-elevage.com/media/catalog/product/cache/7355c03e5731ca893c9850bf35827667/h/o/hor100124-camera-zoom-pro-horizont.jpg'
-      },
-      {
-        id: 'c-5',
-        label: 'Tabletas',
-        imageUrl: 'https://i5.walmartimages.com.mx/mg/gm/1p/images/product-images/img_large/00019680475082l.jpg'
-      },
-      {
-        id: 'c-6',
-        label: 'Hogar Inteligente',
-        imageUrl: 'https://www.pert.me/wp-content/uploads/2023/04/The-Evolution-of-Smart-Homes-copy.jpg'
-      },
-      {
-        id: 'c-7',
-        label: 'Wearables',
-        imageUrl: 'https://wearables.com/cdn/shop/products/Sony_20-_20SmartWatch_203_20Black_20-_201_480x480.jpg?v=1505837347'
-      },
-      {
-        id: 'c-8',
-        label: 'Audio',
-        imageUrl: 'https://cdnx.jumpseller.com/tienda-gamer-medellin/image/35956913/resize/610/610?1685657260'
-      }
-    ];
-
+    var categoriesString = localStorage.getItem(CATEGORIES_LOCAL_STORAGE_KEY);
     // Simulate a delay of 2 seconds
-    await new Promise(resolve => setTimeout(resolve, 2000));
-
-    return fakeCategories;
+    await new Promise(resolve => setTimeout(resolve, 500));
+    return categoriesString ? JSON.parse(categoriesString) as CategoryMiniature[] : [];
   }
 
   /**
@@ -190,7 +162,7 @@ export class HomeServiceFakeImpl implements IHomeService {
     ];
 
     // Simulate a delay of 4 seconds
-    await new Promise(resolve => setTimeout(resolve, 4000));
+    await new Promise(resolve => setTimeout(resolve, 800));
 
     return sections;
   }

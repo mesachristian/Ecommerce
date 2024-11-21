@@ -6,12 +6,15 @@ import 'swiper/css/pagination';
 import 'swiper/css/effect-cube';
 import App from './App.tsx';
 import { BrowserRouter } from 'react-router-dom';
-import { HomeServiceFirebaseImpl } from './service/firebase/home.firebase.service.ts';
-import { ServiceContext } from './context/service.context.ts';
+//import { HomeServiceFirebaseImpl } from './service/firebase/home.firebase.service.ts';
+import { ServiceContext, ServicesContext } from './context/service.context.ts';
 import { HomeServiceFakeImpl } from './service/fake/home.fake.service.ts';
+import { FavoritesServiceFakeImpl } from './service/fake/favorites.fake.service.ts';
 
-const services = {
-  homeService : new HomeServiceFakeImpl()
+const services: ServicesContext = {
+  homeService : new HomeServiceFakeImpl(),
+  favoritesService: new FavoritesServiceFakeImpl()
+  
   // Add other services here as needed
 };
 

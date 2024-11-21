@@ -1,10 +1,10 @@
-import React, { createContext, useContext } from 'react';
-import { HomeServiceFirebaseImpl } from '../service/firebase/home.firebase.service';
-import { HomeServiceFakeImpl } from '../service/fake/home.fake.service';
+import { createContext, useContext } from 'react';
 import { IHomeService } from '@/service/home.service';
+import { IFavoritesService } from '@/service/favorites.service';
 
 export interface ServicesContext {
   homeService: IHomeService;
+  favoritesService: IFavoritesService;
   // Add other services here as needed
 }
 

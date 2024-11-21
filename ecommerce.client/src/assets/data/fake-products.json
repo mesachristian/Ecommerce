@@ -1,0 +1,70 @@
+[
+    {
+        "id": "p-1",
+        "name": "Samsung Galaxy S23",
+        "description": "Samsung Galaxy S23 phone description",
+        "category": "Telefonos",
+        "priceCOP": 3000000,
+        "isLiked": true,
+        "imagesUrls": [
+            "https://images.samsung.com/co/smartphones/galaxy-s23-ultra/images/galaxy-s23-ultra-common-introduction-banner.jpg?imbypass=true"
+        ]
+    },
+    {
+        "id": "p-2",
+        "name": "iPhone 14",
+        "description": "iPhone 14 phone description",
+        "category": "Telefonos",
+        "priceCOP": 4000000,
+        "previousPriceCOP" : 45000000,
+        "isLiked": true,
+        "imagesUrls": [
+            "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQVlvX7PDOzhBzDV0W1j25y0SVLjRaOp7J44Q&s"
+        ]
+    },
+    {
+        "id": "p-3",
+        "name": "Motorola Edge 40",
+        "description": "Motorola Edge 40 phone description",
+        "category": "Telefonos",
+        "priceCOP": 1500000,
+        "previousPriceCOP": 1000000,
+        "isLiked": true,
+        "imagesUrls": [
+            "https://i.blogs.es/45176e/motorola-edge-40-1/650_1200.jpeg"
+        ]
+    },
+    {
+        "id": "p-4",
+        "name": "Laptop Dell Inspiron",
+        "description": "Laptop Dell Inspiron laptop description",
+        "category": "Computadores",
+        "priceCOP": 2500000,
+        "isLiked": true,
+        "imagesUrls": [
+            "https://m.media-amazon.com/images/I/71nP6lTogjL._AC_SL1500_.jpg"
+        ]
+    },
+    {
+        "id": "p-5",
+        "name": "HP Pavilion x360",
+        "description": "HP Pavilion x360 laptop description",
+        "category": "Computadores",
+        "priceCOP": 2200000, 
+        "isLiked": true,
+        "imagesUrls": [
+            "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQNLBUmz4x3MEA_E2ziHYOJatPwHBMrskZAnQ&s"
+        ]
+    },
+    {
+        "id": "p-6",
+        "name": "MacBook Air M2",
+        "description": "MacBook Air M2 laptop description",
+        "category": "Computadores",
+        "priceCOP": 5000000,
+        "isLiked": true,
+        "imagesUrls": [
+            "https://i.blogs.es/3c4365/diseno/450_1000.jpg"
+        ]
+    }
+]

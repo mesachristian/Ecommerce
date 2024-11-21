@@ -2,7 +2,9 @@ export default interface Product{
     id: string;
     name: string;
     description: string;
-    price: string;
+    category: string;
+    priceCOP: number;
+    previousPriceCOP: number | null | undefined;
     isLiked: boolean;
-    imagesUrls: any[];
+    imagesUrls: string[];
 }
