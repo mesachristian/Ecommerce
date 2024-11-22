@@ -10,10 +10,12 @@ import { BrowserRouter } from 'react-router-dom';
 import { ServiceContext, ServicesContext } from './context/service.context.ts';
 import { HomeServiceFakeImpl } from './service/fake/home.fake.service.ts';
 import { FavoritesServiceFakeImpl } from './service/fake/favorites.fake.service.ts';
+import { ShoppingCartFakeImpl } from './service/fake/shopping-cart.fake.service.ts';
 
 const services: ServicesContext = {
   homeService : new HomeServiceFakeImpl(),
-  favoritesService: new FavoritesServiceFakeImpl()
+  favoritesService: new FavoritesServiceFakeImpl(),
+  shoppingCartService : new ShoppingCartFakeImpl()
   
   // Add other services here as needed
 };

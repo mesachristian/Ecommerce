@@ -1,10 +1,12 @@
 import { createContext, useContext } from 'react';
 import { IHomeService } from '@/service/home.service';
 import { IFavoritesService } from '@/service/favorites.service';
+import { IShoppingCartService } from '@/service/shopping-cart.service';
 
 export interface ServicesContext {
   homeService: IHomeService;
   favoritesService: IFavoritesService;
+  shoppingCartService: IShoppingCartService;
   // Add other services here as needed
 }
 

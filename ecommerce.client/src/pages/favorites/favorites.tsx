@@ -9,7 +9,7 @@ import { LoadingComponent } from "@/components/global";
 
 const FavoritesPage = () => {
     // Services
-    const { favoritesService } = useServices();
+    const { favoritesService, shoppingCartService } = useServices();
 
     const [favorites, setFavorites] = useState<FavoriteProduct[] | null>(null);
 
@@ -58,7 +58,9 @@ const FavoritesPage = () => {
                                                 <h3 className="font-semibold text-lg mb-1">{product.name}</h3>
                                                 <p className="mb-2">${product.priceCOP}</p>
                                                 <div className="flex justify-between items-center">
-                                                    <Button size="sm" className="bg-emerald-600 hover:bg-emerald-700">Add to Cart</Button>
+                                                    <Button size="sm" 
+                                                            onClick={()=>{shoppingCartService.addProductToCart(product.id)}}
+                                                            className="bg-emerald-600 hover:bg-emerald-700">Add to Cart</Button>
                                                     <Button
                                                         variant="ghost"
                                                         size="sm"
