@@ -9,15 +9,16 @@ import { getAuth, GoogleAuthProvider } from "firebase/auth";
 // Your web app's Firebase configuration
 // For Firebase JS SDK v7.20.0 and later, measurementId is optional
 const firebaseConfig = {
-  apiKey: "AIzaSyA5WoYKAYEz9QEncz7z5CreeU07xkVa2KM",
-  authDomain: "serbia-web-store.firebaseapp.com",
-  projectId: "serbia-web-store",
-  storageBucket: "serbia-web-store.appspot.com",
-  messagingSenderId: "1094183118709",
-  appId: "1:1094183118709:web:d53125f17eb32e6fde953c",
-  measurementId: "G-GVCM8BFB6R",
-  databaseURL : "https://serbia-web-store-default-rtdb.firebaseio.com/"
+  apiKey: "AIzaSyD7c1GGJa38Zanx99Mgh29ykGeijMdzJXE",
+  authDomain: "e-commerce-75f1b.firebaseapp.com",
+  projectId: "e-commerce-75f1b",
+  storageBucket: "e-commerce-75f1b.firebasestorage.app",
+  messagingSenderId: "975635914324",
+  appId: "1:975635914324:web:51cd7d46eacb6057c6d7c1",
+  measurementId: "G-Q63HE07BVF",
+  databaseURL : "https://e-commerce-75f1b-default-rtdb.firebaseio.com/"
 };
+
 
 // Initialize Firebase
 export const app = initializeApp(firebaseConfig);

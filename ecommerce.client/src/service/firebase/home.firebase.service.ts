@@ -17,7 +17,7 @@ export class HomeServiceFirebaseImpl implements IHomeService {
    */
   async getCategories(): Promise<CategoryMiniature[]> {
     try {
-      return [];
+      //return [];
       const snapshot = await get(child(this.dbRef, `categories`));
       if (snapshot.exists()) {
         const data = snapshot.val();
@@ -40,7 +40,7 @@ export class HomeServiceFirebaseImpl implements IHomeService {
    */
   async getHomeSections(): Promise<HomeSection[]> {
     try {
-      return [];
+      //return [];
       const snapshot = await get(child(this.dbRef, `homeSections`));
       if (snapshot.exists()) {
         const data = snapshot.val();
