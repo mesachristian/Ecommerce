@@ -1,12 +1,15 @@
 import { Bell, Home, Search, ShoppingCart, Star, User } from 'lucide-react'
 import { Button } from "@/components/ui/button"
-import { Route, Routes, useNavigate } from 'react-router-dom'
+import { Route, Routes, useNavigate } from 'react-router'
 import {
     CartPage,
     CatalogPage,
     FavoritesPage,
     HomePage,
-    ProfilePage
+    NotFoundPage,
+    ProfilePage,
+    SignInPage,
+    SignUpPage
 } from '@/pages';
 import { BottomSheet } from 'react-spring-bottom-sheet';
 import { useMemo, useState } from 'react';
@@ -35,19 +38,22 @@ function App() {
 
                 <AppHeader />
 
-                <main className="flex-grow p-4 mb-16 flex flex-col">
+                <main className="flex-grow mb-16 flex flex-col">
                     <Routes>
                         <Route path="/" element={<HomePage />}></Route>
                         <Route path="/catalog" element={<CatalogPage />}></Route>
                         <Route path="/cart" element={<CartPage />}></Route>
                         <Route path="/favorites" element={<FavoritesPage />}></Route>
-                        <Route path="/profile" element={<ProfilePage />}></Route>
+                        <Route path="/profile" element={<ProfilePage />} />
+                        <Route path='/signin' element={<SignInPage />} />
+                        <Route path='/signup' element={<SignUpPage />} />
+                        <Route path='*' element={<NotFoundPage />} />
                     </Routes>
                 </main>
 
                 <AppFooter />
 
-                <BottomSheet  
+                <BottomSheet
                     open={showProductBottomSheet}
                     onDismiss={() => setShowProductBottomSheet(false)}>
                     <MobileProductSheet productId={productIdBS} />

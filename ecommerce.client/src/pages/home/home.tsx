@@ -30,7 +30,7 @@ const HomePage = () => {
     }, []);
 
     return (
-        <>
+        <div className="p-4">
             <Card className="mb-6 bg-emerald-50 border-emerald-200">
                 <CardContent className="p-4">
                     <p className="text-emerald-700">Delivery is <span className="font-bold">50% cheaper</span> today! 🚚💨</p>
@@ -105,7 +105,7 @@ const HomePage = () => {
 
 
 
-        </>
+        </div>
     )
 }
 
