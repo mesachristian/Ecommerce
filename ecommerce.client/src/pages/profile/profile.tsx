@@ -1,38 +1,56 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { ChevronRight, CreditCard, LogOut } from 'lucide-react'
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { Switch } from "@/components/ui/switch"
+import { useServices } from '@/context/service.context'
+import { Navigate, useNavigate } from 'react-router'
+import { User } from '@/models'
 
 const ProfilePage = () => {
 
-    const [isAutheticated, setIsAutheticated] = useState<boolean>(true);
+    const { authService } = useServices();
 
+    const [loading, setLoading] = useState<boolean>(true);
+    const [authUser, setAuthUser] = useState<User | null>(null);
 
-    if(isAutheticated){
-        return(
-            <LoggedInProfile />
-        );
+    useEffect(() => {
+        const fetchUserInfo = async() =>{
+            const userInfo = await authService.getUserInfo();
+            setAuthUser(userInfo);
+            setLoading(false);
+        }
+
+        fetchUserInfo().catch(console.log);
+    },[]);
+    
+    if(loading){
+        return <h1>Loading ...</h1>;
     }
 
-    return (
-        <LoginPage />
-    )
-}
+    if(authUser == null){
+        return <Navigate replace to={"/signin"} />;
+    }
 
-const LoginPage = () => {
-    return(
-        <h1>Login Page</h1>
-    );
+    return <LoggedInProfile />;
 }
 
 const LoggedInProfile = () => {
 
-    const [notifications, setNotifications] = useState(true)
+    const navigate = useNavigate();
+
+    const { authService } = useServices();
+
+    const [notifications, setNotifications] = useState(true);
+
+    const handleLogout = () => {
+        authService.logout();
+        navigate("/");
+    }
 
     return (
-        <>
+        <div className='p-4'>
             <Card className="mb-6">
                 <CardContent className="p-6">
                     <div className="flex items-center space-x-4">
@@ -142,11 +160,11 @@ const LoggedInProfile = () => {
                     </CardContent>
                 </Card>
 
-                <Button variant="destructive" className="w-full">
+                <Button variant="destructive" className="w-full" onClick={handleLogout}>
                     <LogOut className="mr-2 h-4 w-4" /> Log Out
                 </Button>
             </div>
-        </>
+        </div>
     );
 }
 
