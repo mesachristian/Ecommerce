@@ -12,12 +12,13 @@ import { HomeServiceFakeImpl } from './service/fake/home.fake.service.ts';
 import { HomeServiceFirebaseImpl } from './service/firebase/home.firebase.service.ts';
 import { FavoritesServiceFakeImpl } from './service/fake/favorites.fake.service.ts';
 import { ShoppingCartFakeImpl } from './service/fake/shopping-cart.fake.service.ts';
+import { ShoppingCartFirebaseImpl } from './service/firebase/shopping-cart.firebase.service.ts';
 
 const services: ServicesContext = {
   homeService : new HomeServiceFirebaseImpl(),
   //homeService : new HomeServiceFakeImpl(),
   favoritesService: new FavoritesServiceFakeImpl(),
-  shoppingCartService : new ShoppingCartFakeImpl()
+  shoppingCartService : new ShoppingCartFirebaseImpl()
   
   // Add other services here as needed
 };
