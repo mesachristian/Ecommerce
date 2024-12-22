@@ -59,9 +59,9 @@ const SignInPage = () => {
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault()
         if (validateForm()) {
-            setIsLoading(true)
+            setIsLoading(true);
             await authService.login(formData.email, formData.password);
-            setIsLoading(false)
+            setIsLoading(false);
             navigate("/home");
         } else {
             console.log('error')
@@ -72,11 +72,10 @@ const SignInPage = () => {
         const fetchUserData = async() => {
             setUserData(await authService.getUserInfo());
         }
-
         fetchUserData().catch(console.log)
     },[]);
 
-    if(userData == null)
+    if(userData != null)
         return <Navigate to={{ pathname: "/profile"}}/>
 
     return (

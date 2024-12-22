@@ -13,13 +13,14 @@ const ProfilePage = () => {
     const { authService } = useServices();
 
     const [loading, setLoading] = useState<boolean>(true);
-    const [authUser, setAuthUser] = useState<User | null>(null);
+    const [authUser, setAuthUser] = useState<User | null>();
 
     useEffect(() => {
         const fetchUserInfo = async() =>{
+            setLoading(true);
             const userInfo = await authService.getUserInfo();
-            setAuthUser(userInfo);
             setLoading(false);
+            setAuthUser(userInfo);
         }
 
         fetchUserInfo().catch(console.log);

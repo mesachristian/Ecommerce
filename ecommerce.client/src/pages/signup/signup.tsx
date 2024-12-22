@@ -7,7 +7,7 @@ import { User } from "@/models";
 import { CheckCircle2, Eye, EyeOff, XCircle } from "lucide-react";
 import { motion } from "motion/react";
 import { useEffect, useState } from "react";
-import { Link, Navigate } from "react-router";
+import { Link, Navigate, useNavigate } from "react-router";
 
 interface FormData {
     name: string;
@@ -26,6 +26,7 @@ interface FormErrors {
 
 const SignUpPage = () => {
 
+    const navigate = useNavigate();
     const { authService } = useServices();
     const [userData, setUserData] = useState<User | null>(null);
     const [isLoading, setIsLoading] = useState(false);
@@ -77,13 +78,9 @@ const SignUpPage = () => {
         e.preventDefault()
         if (validateForm()) {
             setIsLoading(true)
-            console.log("event handle", formData);
-            // Simulate API call
-            await new Promise(resolve => setTimeout(resolve, 2000))
             await authService.register(formData.email, formData.password);
-            // Simulated successful sign-up
-            setIsLoading(false)
-            //router.push('/') // Redirect to home page
+            setIsLoading(false);
+            navigate("/profile");
         } else {
         }
     }
@@ -102,7 +99,7 @@ const SignUpPage = () => {
         fetchUserData().catch(console.log)
     },[]);
 
-    if(userData == null)
+    if(userData != null)
         return <Navigate to={{ pathname: "/profile"}}/>
 
     return (
