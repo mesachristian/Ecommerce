@@ -9,7 +9,8 @@ import {
     NotFoundPage,
     ProfilePage,
     SignInPage,
-    SignUpPage
+    SignUpPage,
+    Checkout
 } from '@/pages';
 import { BottomSheet } from 'react-spring-bottom-sheet';
 import { useMemo, useState } from 'react';
@@ -47,6 +48,7 @@ function App() {
                         <Route path="/profile" element={<ProfilePage />} />
                         <Route path='/signin' element={<SignInPage />} />
                         <Route path='/signup' element={<SignUpPage />} />
+                        <Route path='/checkout' element={<Checkout/>} />
                         <Route path='*' element={<NotFoundPage />} />
                     </Routes>
                 </main>
