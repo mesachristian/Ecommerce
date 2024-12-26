@@ -17,11 +17,9 @@ export class HomeServiceFirebaseImpl implements IHomeService {
    */
   async getCategories(): Promise<CategoryMiniature[]> {
     try {
-      //return [];
       const snapshot = await get(child(this.dbRef, `categories`));
       if (snapshot.exists()) {
         const data = snapshot.val();
-        // Assuming data is an object where each key is a category ID
         const categories: CategoryMiniature[] = Object.values(data);
         return categories;
       } else {
@@ -30,7 +28,7 @@ export class HomeServiceFirebaseImpl implements IHomeService {
       }
     } catch (error) {
       console.error("Error fetching categories:", error);
-      throw error; // Rethrow the error to be handled by the caller
+      throw error;
     }
   }
 

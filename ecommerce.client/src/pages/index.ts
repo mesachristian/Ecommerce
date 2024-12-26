@@ -7,3 +7,4 @@ export { default as SignInPage } from './signin/signin';
 export { default as SignUpPage } from './signup/signup';
 export { default as NotFoundPage } from './not-found/not-found';
 export { default as Checkout } from './checkout/checkout';
+export { default as ProductPage } from './product/product';
