@@ -1,19 +1,24 @@
-interface OrderProduct {
-    title: string;
-    quantity: number;
-    price: number;
-    size: string;
-    img: string;
-    color: string; // Assuming each product has a color attribute
-  }
+import ShoppingCartProduct from "./shopping-cart-product.dto";
+
+interface ShippingAddress {
+  firstName: string;
+  lastName: string;
+  address: string;
+  apartment?: string; // Optional field
+  city: string;
+  postalCode: string;
+}
   
-export default interface Order {
+export default interface Order{
     orderId: string;
     orderNumber: string;
     userId: string;
-    products: OrderProduct[];
+    contactEmail : string;
+    shippingAddress: ShippingAddress;
+    products: ShoppingCartProduct[];
     totalAmount: number;
     orderDate: string;
     status: string;
+    createdAt:string;
     estimatedDelivery?: string;
   }

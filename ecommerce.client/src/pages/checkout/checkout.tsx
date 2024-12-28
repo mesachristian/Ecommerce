@@ -7,18 +7,24 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
+import CryptoJS from "crypto-js";
 
 import ShoppingCartProduct from "@/models/shopping-cart-product.dto";
 import { ShoppingCartFirebaseImpl } from "@/service/firebase/shopping-cart.firebase.service";
 import { Order } from "@/models";
 import { saveOrder } from "@/service/firebase/order.firebase.service";
 
-// Instantiate your shipping service
 const shippingService = new ShoppingCartFirebaseImpl();
 
-export default function CheckoutPage() {
+interface PaymentData {
+  accountId: string;
+  merchantId: string;
+  apiKey: string;
+  referenceCode: string;
+  signature: string;
+}
 
-  // Local state for cart and form data
+export default function CheckoutPage() {
   const [cart, setCart] = useState<ShoppingCartProduct[]>([]);
   const [email, setEmail] = useState("");
   const [firstName, setFirstName] = useState("");
@@ -27,8 +33,15 @@ export default function CheckoutPage() {
   const [apartment, setApartment] = useState("");
   const [city, setCity] = useState("");
   const [postalCode, setPostalCode] = useState("");
+  const [paymentData, setPaymentData] = useState<PaymentData | null>(null);
 
-  // Load cart data on mount
+  const shippingCost = 10_0000; // Example shipping cost
+  const calculateSubtotal = (): number => {
+    return cart.reduce((acc, item) => acc + item.quantity * item.price, 0);
+  };
+  const subtotal = calculateSubtotal();
+  const total = subtotal + shippingCost;
+
   useEffect(() => {
     (async () => {
       const loadedCart = await shippingService.loadCartData();
@@ -36,41 +49,48 @@ export default function CheckoutPage() {
     })();
   }, []);
 
-  // Helper to recalculate total
-  const calculateSubtotal = (): number => {
-    return cart.reduce((acc, item) => acc + item.quantity * item.price, 0);
-  };
+  useEffect(() => {
+    if (!total) return;
 
-  // In a real app, shipping might be dynamically calculated
-  const shippingCost = 200_000; // e.g. 0.2M
+    const referenceCode = `REF-${Date.now()}`;
+    const apiKey = "4Vj8eK4rloUd272L48hsrarnUA";
+    const merchantId = "508029";
+    const accountId = "512321";
 
-  const subtotal = calculateSubtotal();
-  const total = subtotal + shippingCost;
+    const generateMD5Hash = (text: string) =>
+      CryptoJS.MD5(text).toString(CryptoJS.enc.Hex);
 
-  // Increment cart item
-  const handleIncrement = async (productId: string) => {
-    await shippingService.addProductToCart(productId, 1);
-    setCart(await shippingService.loadCartData());
-  };
+    const signature = generateMD5Hash(
+      `${apiKey}~${merchantId}~${referenceCode}~${total.toFixed(2)}~COP`
+    );
 
-  // Decrement cart item
-  const handleDecrement = async (productId: string) => {
-    await shippingService.decreaseProductQuantity(productId);
-    setCart(await shippingService.loadCartData());
-  };
+    setPaymentData({
+      accountId,
+      merchantId,
+      apiKey,
+      referenceCode,
+      signature,
+    });
+  }, [total]);
 
-  // Handle form submission
   const handleSubmitOrder = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-
-    // Build up the order object
+    e.preventDefault(); // Prevent default form submission behavior
+  
+    if (!paymentData) {
+      alert("Payment data is not ready. Please try again.");
+      return;
+    }
+  
     const userId = "YOUR_USER_ID"; // Replace with real user ID retrieval
-    const orderId = `order-${Date.now()}`; // Example order ID
-
+    const orderId = `order-${Date.now()}`;
+    const orderNumber = `ORD-${Math.floor(1000 + Math.random() * 9000)}`;
+    const status = "Pending";
+    const orderDate = new Date().toISOString();
+  
     const newOrder: Order = {
       orderId,
+      orderNumber,
       userId,
-      products: cart,
       contactEmail: email,
       shippingAddress: {
         firstName,
@@ -80,27 +100,39 @@ export default function CheckoutPage() {
         city,
         postalCode,
       },
+      products: cart,
+      totalAmount: total,
+      orderDate,
+      status,
       createdAt: new Date().toISOString(),
-      // Add other fields as needed
     };
-
-    // Save the order via order service
-    await saveOrder(userId, newOrder);
-
-
+  
+    try {
+      await saveOrder(userId, newOrder);
+      console.log("Order saved successfully.");
+    } catch (error) {
+      console.error("Error saving order:", error);
+      alert("Failed to save order. Please try again.");
+      return;
+    }
+  
+    // Ensure the form is submitted after processing
+    const form = e.target as HTMLFormElement; // Explicitly cast e.target to HTMLFormElement
+    form.submit();
   };
+
+  if (!paymentData) {
+    return <div>Loading payment details...</div>;
+  }
 
   return (
     <div className="min-h-screen md:flex md:justify-center">
       <div className="px-4 py-4 md:w-[800px] space-y-4">
         <h1 className="text-xl font-semibold">Checkout</h1>
 
-        {/* Order Summary */}
         <Card>
           <CardContent className="p-4 space-y-4">
             <h2 className="font-semibold text-base">Order Summary</h2>
-
-            {/* Dynamically render cart products */}
             {cart.map((item) => (
               <div key={item.id} className="flex gap-3">
                 <div className="relative w-16 h-16 bg-gray-100 rounded-md overflow-hidden flex-shrink-0">
@@ -117,157 +149,119 @@ export default function CheckoutPage() {
                       ${(item.price / 1_000_000).toFixed(1)}M
                     </p>
                   </div>
-                  <div className="flex items-center gap-2 mt-1">
-                    <Button
-                      variant="outline"
-                      size="icon"
-                      className="h-6 w-6"
-                      onClick={() => handleDecrement(item.id)}
-                    >
-                      <Minus className="h-3 w-3" />
-                    </Button>
-                    <span className="text-xs">{item.quantity}</span>
-                    <Button
-                      variant="outline"
-                      size="icon"
-                      className="h-6 w-6"
-                      onClick={() => handleIncrement(item.id)}
-                    >
-                      <Plus className="h-3 w-3" />
-                    </Button>
-                  </div>
                 </div>
               </div>
             ))}
-
             <Separator className="my-2" />
-
-            {/* Order Totals */}
-            <div className="space-y-1 text-sm">
-              <div className="flex justify-between">
-                <span className="text-gray-500">Subtotal</span>
-                <span>${(subtotal / 1_000_000).toFixed(1)}M</span>
-              </div>
-              <div className="flex justify-between">
-                <span className="text-gray-500">Shipping</span>
-                <span>${(shippingCost / 1_000_000).toFixed(1)}M</span>
-              </div>
-              <Separator className="my-2" />
-              <div className="flex justify-between font-semibold">
-                <span>Total</span>
-                <span>${(total / 1_000_000).toFixed(1)}M</span>
-              </div>
+            <div className="flex justify-between">
+              <span>Subtotal:</span>
+              <span>${(subtotal / 1_000_000).toFixed(1)}M</span>
+            </div>
+            <div className="flex justify-between">
+              <span>Shipping:</span>
+              <span>${(shippingCost / 1_000_000).toFixed(1)}M</span>
+            </div>
+            <div className="flex justify-between font-semibold">
+              <span>Total:</span>
+              <span>${(total / 1_000_000).toFixed(1)}M</span>
             </div>
           </CardContent>
         </Card>
 
-        {/* Checkout Form */}
-        <form onSubmit={handleSubmitOrder} className="space-y-4">
-          {/* Contact Information */}
+        {/* Shipping Address */}
+        <form
+          onSubmit={handleSubmitOrder}
+          method="post"
+          action="https://sandbox.checkout.payulatam.com/ppp-web-gateway-payu/"
+        >
           <div className="space-y-2">
             <h2 className="font-semibold text-base">Contact Information</h2>
-            <div className="space-y-2">
-              <Label htmlFor="email" className="text-sm">
-                Email
-              </Label>
-              <Input
-                id="email"
-                type="email"
-                placeholder="your@email.com"
-                required
-                className="text-sm"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-              />
-            </div>
+            <Label htmlFor="email">Email</Label>
+            <Input
+              id="email"
+              type="email"
+              placeholder="you@example.com"
+              required
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+            />
           </div>
 
           <Separator />
 
-          {/* Shipping Address */}
           <div className="space-y-2">
             <h2 className="font-semibold text-base">Shipping Address</h2>
-            <div className="grid grid-cols-2 gap-3">
-              <div className="space-y-1">
-                <Label htmlFor="firstName" className="text-sm">
-                  First Name
-                </Label>
-                <Input
-                  id="firstName"
-                  required
-                  className="text-sm"
-                  value={firstName}
-                  onChange={(e) => setFirstName(e.target.value)}
-                />
-              </div>
-              <div className="space-y-1">
-                <Label htmlFor="lastName" className="text-sm">
-                  Last Name
-                </Label>
-                <Input
-                  id="lastName"
-                  required
-                  className="text-sm"
-                  value={lastName}
-                  onChange={(e) => setLastName(e.target.value)}
-                />
-              </div>
-            </div>
-            <div className="space-y-1">
-              <Label htmlFor="address" className="text-sm">
-                Street Address
-              </Label>
-              <Input
-                id="address"
-                required
-                className="text-sm"
-                value={address}
-                onChange={(e) => setAddress(e.target.value)}
-              />
-            </div>
-            <div className="space-y-1">
-              <Label htmlFor="apartment" className="text-sm">
-                Apartment, suite, etc. (optional)
-              </Label>
-              <Input
-                id="apartment"
-                className="text-sm"
-                value={apartment}
-                onChange={(e) => setApartment(e.target.value)}
-              />
-            </div>
-            <div className="grid grid-cols-2 gap-3">
-              <div className="space-y-1">
-                <Label htmlFor="city" className="text-sm">
-                  City
-                </Label>
-                <Input
-                  id="city"
-                  required
-                  className="text-sm"
-                  value={city}
-                  onChange={(e) => setCity(e.target.value)}
-                />
-              </div>
-              <div className="space-y-1">
-                <Label htmlFor="postalCode" className="text-sm">
-                  Postal Code
-                </Label>
-                <Input
-                  id="postalCode"
-                  required
-                  className="text-sm"
-                  value={postalCode}
-                  onChange={(e) => setPostalCode(e.target.value)}
-                />
-              </div>
-            </div>
+            <Label htmlFor="firstName">First Name</Label>
+            <Input
+              id="firstName"
+              required
+              value={firstName}
+              onChange={(e) => setFirstName(e.target.value)}
+            />
+            <Label htmlFor="lastName">Last Name</Label>
+            <Input
+              id="lastName"
+              required
+              value={lastName}
+              onChange={(e) => setLastName(e.target.value)}
+            />
+            <Label htmlFor="address">Address</Label>
+            <Input
+              id="address"
+              required
+              value={address}
+              onChange={(e) => setAddress(e.target.value)}
+            />
+            <Label htmlFor="apartment">Apartment</Label>
+            <Input
+              id="apartment"
+              value={apartment}
+              onChange={(e) => setApartment(e.target.value)}
+            />
+            <Label htmlFor="city">City</Label>
+            <Input
+              id="city"
+              required
+              value={city}
+              onChange={(e) => setCity(e.target.value)}
+            />
+            <Label htmlFor="postalCode">Postal Code</Label>
+            <Input
+              id="postalCode"
+              required
+              value={postalCode}
+              onChange={(e) => setPostalCode(e.target.value)}
+            />
           </div>
+
+          {/* Hidden Inputs for PayU */}
+          <input type="hidden" name="merchantId" value={paymentData.merchantId} />
+          <input type="hidden" name="accountId" value={paymentData.accountId} />
+          <input type="hidden" name="description" value="Order Payment" />
+          <input
+            type="hidden"
+            name="referenceCode"
+            value={paymentData.referenceCode}
+          />
+          <input type="hidden" name="amount" value={total.toFixed(2)} />
+          <input type="hidden" name="tax" value="0" />
+          <input type="hidden" name="taxReturnBase" value="0" />
+          <input type="hidden" name="currency" value="COP" />
+          <input type="hidden" name="signature" value={paymentData.signature} />
+          <input
+            type="hidden"
+            name="responseUrl"
+            value="http://your-site.com/response"
+          />
+          <input
+            type="hidden"
+            name="confirmationUrl"
+            value="http://your-site.com/confirmation"
+          />
 
           <Button
             type="submit"
             className="w-full bg-emerald-500 hover:bg-emerald-600 text-white"
-            size="lg"
           >
             Continue to Payment
           </Button>
